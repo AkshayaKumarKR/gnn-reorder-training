@@ -54,29 +54,29 @@ def mini_batch_training_dgl(model, config, g, timer=None):
         model.train()
         total_loss = total_correct = step = 0
         glt_dataset.node_labels = glt_dataset.node_labels.to("cpu")
-        timer.start("Dataloading")
-        for i, (batch_size, n_id, adjs) in enumerate(train_loader):
+        # Data Loading Start
+        for batch_size, n_id, adjs in train_loader:
             adjs = [adj.to("cpu") for adj in adjs]
-            timer.stop("Dataloading")
-            timer.start("Learning")
-            x = glt_dataset.node_features[n_id]
-            y = glt_dataset.node_labels[n_id[:batch_size]]
-
+            # Data Loading End
+            # Learning Start
             optimizer.zero_grad()
-            y_hat = model(x, adjs)
-            loss = F.cross_entropy(y_hat, y)
+            # Forward pass through the model using batched data
+            out = model(glt_dataset.node_features[n_id], adjs)
+            out_target = out[:batch_size]
+            # Calculate the loss using only the target nodes
+            loss = F.nll_loss(out_target, glt_dataset.node_labels[n_id[:batch_size]])
             loss.backward()
             optimizer.step()
-
             total_loss += float(loss)
-            total_correct += int(y_hat.argmax(dim=-1).eq(y).sum())
+            total_correct += int(out_target.argmax(dim=-1).eq(glt_dataset.node_labels[n_id[:batch_size]]).sum())
             step += 1
-            timer.stop("Learning")
+            # Learning End
             pbar.update(batch_size)
 
+        epoch_end = time.time()
         timer.stop("Epoch")
         pbar.close()
         avg_loss = total_loss / step
         approx_acc = total_correct / len(train_idx)
-        print(f'Epoch {epoch}, Loss: {avg_loss:.4f}, Approx Train Accuracy: {approx_acc:.4f}')
-        print(total_correct, len(train_idx))
+        print(f'Epoch {epoch}, Loss: {avg_loss:.4f}, Approx Train Accuracy: {approx_acc:.4f}, '
+              f'Epoch Time: {epoch_end - epoch_start:.2f}')

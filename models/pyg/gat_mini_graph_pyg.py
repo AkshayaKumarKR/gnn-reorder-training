@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from torch_geometric.nn import GATv2Conv
+from torch_geometric.nn import GATConv
 from tqdm import tqdm
 
 
@@ -17,15 +17,15 @@ class GAT_PYG(torch.nn.Module):
 
         if num_layers == 1:
             self.layers.append(
-                GATv2Conv(in_channels, out_channels, 1))
+                GATConv(in_channels, out_channels, heads, concat=False))
         else:
             self.layers.append(
-                GATv2Conv(in_channels, hidden_channels // heads, heads))
+                GATConv(in_channels, hidden_channels, heads))
             for _ in range(1, num_layers - 1):
                 self.layers.append(
-                    GATv2Conv(hidden_channels, hidden_channels // heads, heads))
+                    GATConv(hidden_channels * heads, hidden_channels , heads))
             self.layers.append(
-                GATv2Conv(hidden_channels, out_channels, 1))
+                GATConv(hidden_channels * heads, out_channels, 1, concat=False))
 
     def reset_parameters(self):
         for layer in self.layers:

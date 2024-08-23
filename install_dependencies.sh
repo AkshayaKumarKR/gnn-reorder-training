@@ -19,8 +19,5 @@ cd graphlearn-for-pytorch
 WITH_CUDA=OFF python setup.py bdist_wheel
 pip install dist/*
 
-# Install Pip wheel
-pip install graphlearn-torch
-
 # Change directory to reorder-training
 cd ../training

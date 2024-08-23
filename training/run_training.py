@@ -2,7 +2,7 @@ import os
 import sys
 
 print(sys.path)
-sys.path.append('../')
+sys.path.append('')
 import time
 import torch_geometric
 import torch
@@ -190,7 +190,7 @@ def run_pyg_training(config):
     Returns:
         None
     """
-    path_to_graph = "../input/{}/reordered-graphs/{}-{}.pt".format(
+    path_to_graph = "input/{}/reordered-graphs/{}-{}.pt".format(
         config["graph_name"], config["graph_name"], config["reordering_strategy"])
     data = load_pyg_graph(path_to_graph, config)
     print("Before resizing")
@@ -199,13 +199,6 @@ def run_pyg_training(config):
 
     print("Resizing done")
     print(data)
-
-    print(torch.nonzero(data.train_mask, as_tuple=True)[0].squeeze().to(dtype=torch.int64).to(torch.device("cpu"))
-          .size())
-    print(torch.nonzero(data.val_mask, as_tuple=True)[0].squeeze().to(dtype=torch.int64).to(torch.device("cpu"))
-          .size())
-    print(torch.nonzero(data.test_mask, as_tuple=True)[0].squeeze().to(dtype=torch.int64).to(torch.device("cpu"))
-          .size())
 
     durations, means, variances = measure_training_time(data, config)
     write_results(config=config, durations=durations)
@@ -221,10 +214,13 @@ def run_dgl_training(config):
     Returns:
         None
     """
-    path_to_graph = "../input/{}/reordered-graphs/{}-{}.dgl".format(
+    path_to_graph = "input/{}/reordered-graphs/{}-{}.dgl".format(
         config["graph_name"], config["graph_name"], config["reordering_strategy"])
     graph = load_dgl_graph(path_to_graph, config)
+    print("Before resizing")
+    print(graph)
     graph = adapt_graph_feature_size_dgl(graph, config)
+    print("Resizing done")
     print(graph)
     durations, means, variances = measure_training_time(graph, config)
     write_results(config=config, durations=durations)
