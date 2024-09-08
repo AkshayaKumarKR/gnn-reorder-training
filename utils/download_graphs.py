@@ -24,9 +24,9 @@ def save_edgelist(graph, graph_name):
         print(f"Graph is already available {graph_name}")
 
 
-data_products = DglNodePropPredDataset(name='ogbn-products')
-graph_products, _ = data_products[0]
-save_edgelist(graph=graph_products, graph_name="ogbn-products")
+# data_products = DglNodePropPredDataset(name='ogbn-products')
+# graph_products, _ = data_products[0]
+# save_edgelist(graph=graph_products, graph_name="ogbn-products")
 
 data_arxiv = DglNodePropPredDataset(name='ogbn-arxiv')
 graph_arxiv, _ = data_arxiv[0]

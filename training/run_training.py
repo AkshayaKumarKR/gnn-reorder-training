@@ -42,7 +42,7 @@ def parser():
                         type=str, help="form", default="coo")
     parser.add_argument("-path_to_result_metrics", required=True,
                         type=str,
-                        help="in this file we store the results, e.g, /reorder-training/experiments/1.json")
+                        help="in this file we store the results, e.g, gnn-reorder-training/experiments/1.json")
 
     return parser
 

@@ -1,4 +1,4 @@
 GRAPHS = [
     "ogbn-arxiv",
-    "ogbn-products"
+    # "ogbn-products"
 ]

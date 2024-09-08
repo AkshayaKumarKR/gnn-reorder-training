@@ -38,12 +38,13 @@ def mini_batch_training_pyg(model, config, g, timer=None):
                                              train_idx,
                                              batch_size=config["batch_size"],
                                              shuffle=True,
-                                             drop_last=True,
+                                             drop_last=False,
                                              device=torch.device('cpu'),
                                              as_pyg_v1=True)
 
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
+    # Training of the model
     for epoch in range(1, config['num_epochs'] + 1):
         pbar = tqdm(total=len(train_idx))
         pbar.set_description(f'Epoch {epoch}')
@@ -77,3 +78,5 @@ def mini_batch_training_pyg(model, config, g, timer=None):
         approx_acc = total_correct / len(train_idx)
         print(f'Epoch {epoch}, Loss: {avg_loss:.4f}, Approx Train Accuracy: {approx_acc:.4f}, '
               f'Epoch Time: {epoch_end - epoch_start:.2f}')
+
+

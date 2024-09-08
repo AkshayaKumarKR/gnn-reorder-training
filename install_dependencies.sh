@@ -20,4 +20,4 @@ WITH_CUDA=OFF python setup.py bdist_wheel
 pip install dist/*
 
 # Change directory to reorder-training
-cd ../training
+cd ..
